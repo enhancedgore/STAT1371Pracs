@@ -1,11 +1,11 @@
 library(tidyverse)
 # 
-# class97 <- read_csv("class97.csv")
-# knitr::kable(head(class97))
+ class97 <- read_csv("class97.csv")
+ knitr::kable(head(class97))
 # head(class97$tutetime)
 # class97$tutetime
 # nrow(class97)
-# sum(class97$height >= 0, na.rm=TRUE)
+ sum(class97$height >= 0, na.rm=TRUE)
 # ggplot(class97) +
 #   geom_bar(aes(x=height))
 # summary(class97$height)
@@ -56,3 +56,42 @@ babynames2017 <- data.frame(filter(babynames, year == 2017 & sex == "F"))
 
 head(select(arrange(babynames2017, desc(n)), name, n))
 
+
+library(tidyverse)
+library(babynames)
+babynames %>%
+  filter(name == "Khaleesi", sex == "F") %>%
+  summarise(first = first(n))
+babynames %>%
+  summarise(n = sum(n), distinct = n_distinct(name))
+babynames %>%
+  group_by(year, sex) %>%
+  summarise(total = sum(n))
+
+babynames %>%
+  group_by(year, sex) %>%
+  summarise(total = sum(n)) %>%
+  summarise(total = sum(total))
+babynames %>%
+  group_by(year, sex) %>%
+  ungroup()
+babynames %>%
+  group_by(year, sex) %>%
+  group_by(name)
+tops <- babynames %>%
+  group_by(sex, name) %>%
+  summarise(total = sum(n)) %>%
+  arrange(desc(total)) %>%
+  slice(1:10)
+top_10 <- semi_join(babynames, tops, by = c("name", "sex"))
+
+ggplot(data.frame(tops)) +
+    geom_line(aes(x=prop, y=year, colour=name))
+top_10
+ggplot(class97) +
+  geom_bar(aes(x = tutetime, fill = sex))
+babynames %>% 
+  filter(name == "Mary") %>% 
+  group_by(year)
+  mean(babynames$n)
+sum(filtered$n)/nrow(filtered)
